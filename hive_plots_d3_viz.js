@@ -218,7 +218,7 @@ export function plotEdges(data, svg, x, y) {
      * directly to the svg input.
      * @todo: pass along other edge kwargs to each edge
      */
-    console.log(data);
+    console.log(data.edges);
     var axisNames = Object.keys(data.edges);
     for (var i = 0; i < axisNames.length; i++){
         var connectingAxes = Object.keys(data.edges[axisNames[i]]);
