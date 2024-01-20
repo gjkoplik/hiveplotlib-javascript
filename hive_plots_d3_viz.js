@@ -222,7 +222,7 @@ export function plotEdges(data, svg, x, y) {
     }
 }
 
-export function visualizeHivePlot(
+export default function visualizeHivePlot(
     hiveplotlibOutputFile, xExtent = [-5, 5], yExtent = [-5, 5], top = 0,
     bottom = 0, left = 0, right = 0, width = 450, height = 450, element = "body"
     ) {
