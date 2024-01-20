@@ -170,6 +170,8 @@ export function plotNodes(data, svg, x, y) {
      * directly to the svg input.
      */
 
+    console.log("plotting nodes");
+
     var axisNames = Object.keys(data.axes);
     for (let i = 0; i < axisNames.length; i++){
         // this at least plots one real point from each axis...
