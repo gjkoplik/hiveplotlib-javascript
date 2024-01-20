@@ -149,6 +149,8 @@ export function plotAxes(data, svg, x, y) {
         svg.append("path")
             .datum(data)
             .attr("d", myLine)
+            .attr("stroke", "black")
+            .attr("stroke-width", 1.5)
             .attr("class", "axis");
     }
 }
