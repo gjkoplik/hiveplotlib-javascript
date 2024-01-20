@@ -146,6 +146,9 @@ export function plotAxes(data, svg, x, y) {
 
         var myLine = d3.line()([scaledStart, scaledEnd]);
 
+        console.log("plotting line");
+        console.log(myLine);
+
         svg.append("path")
             .datum(data)
             .attr("d", myLine)
