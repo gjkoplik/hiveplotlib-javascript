@@ -2,18 +2,11 @@
 
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 
-export function marcon() {
+export function marcon(top = 0, bottom = 0, left = 0, right = 0, width = 900, height = 600, element = "body") {
     /* Adapted from https://unpkg.com/d3-marcon@2.0.2/build/d3-marcon.js (didn't export the needed way)*/
 
     var instance = {};
-    var top = 0,
-      bottom = 0,
-      left = 0,
-      right = 0,
-      width = 900,
-      height = 600,
-      element = "body",
-      svg;
+    var svg;
 
     instance.top = function(d) {
       if (!arguments.length) return top;
@@ -83,7 +76,8 @@ export function marcon() {
 
 
 export function initializeSVG(
-    xExtent, yExtent, top, bottom, left, right, width, height, element
+    xExtent = [-5, 5], yExtent = [-5, 5], top = 0, bottom = 0, left = 0, right = 0,
+    width = 450, height = 450, element = "body"
     ){
     /**
      * Initialize things needed for a hive plot visualization.
@@ -105,15 +99,6 @@ export function initializeSVG(
      * the "xExtent" information, the "yExtent" information,
      * and the resulting "x" and "y" d3 axis scalings.
      */
-    var xExtent = [-5, 5],
-        yExtent = [-5, 5],
-        top = 0,
-        bottom = 0,
-        left = 0,
-        right = 0,
-        width = 450,
-        height = 450,
-        element = "body";
 
     var m = marcon()
         .top(top)
@@ -138,16 +123,6 @@ export function initializeSVG(
             "x": xScale, "y": yScale};
 }
 
-// hardcoded extents for now, switch to code later
-// const yExtent = [-5, 5];
-// const xExtent = [-5, 5];
-
-// var yScale = d3.scaleLinear()
-//     .range([bodyHeight, 0])
-//     .domain(yExtent);
-// var xScale = d3.scaleLinear()
-//     .range([0, bodyWidth])
-//     .domain(xExtent);
 
 export function plotAxes(data, svg, x, y) {
     /**
@@ -159,13 +134,13 @@ export function plotAxes(data, svg, x, y) {
      * @param {d3.scaleLinear} y d3 y axis.
      * @return {null} Nothing returned as changes will be made
      * directly to the svg input.
+     * @todo: pass along line kwargs to each axis.
      */
 
     var axisNames = Object.keys(data.axes);
     for (let i = 0; i < axisNames.length; i++){
         var start = data.axes[axisNames[i]].start;
         var end = data.axes[axisNames[i]].end;
-        /* TODO: call scalings more DRY */
         var scaledStart = [x(start[0]), y(start[1])];
         var scaledEnd = [x(end[0]), y(end[1])];
 
@@ -174,6 +149,8 @@ export function plotAxes(data, svg, x, y) {
         svg.append("path")
             .datum(data)
             .attr("d", myLine)
+            .attr("stroke", "black")
+            .attr("stroke-width", 1.5)
             .attr("class", "axis");
     }
 }
@@ -188,6 +165,7 @@ export function plotNodes(data, svg, x, y) {
      * @param {d3.scaleLinear} y d3 y axis.
      * @return {null} Nothing returned as changes will be made
      * directly to the svg input.
+     * @todo: pass along node kwargs to each node.
      */
 
     var axisNames = Object.keys(data.axes);
@@ -216,7 +194,8 @@ export function plotEdges(data, svg, x, y) {
      * @param {d3.scaleLinear} y d3 y axis.
      * @return {null} Nothing returned as changes will be made
      * directly to the svg input.
-     * @todo: pass along other edge kwargs to each edge
+     * @todo: pass along other edge kwargs to each edge.
+     * @todo: don't hard-code edge color kwarg; expose to user.
      */
 
     var axisNames = Object.keys(data.edges);
@@ -247,9 +226,9 @@ export function plotEdges(data, svg, x, y) {
     }
 }
 
-export function visualizeHivePlot(
-    hiveplotlibOutputFile, xExtent, yExtent, top,
-    bottom, left, right, width, height, element
+export default function visualizeHivePlot(
+    hiveplotlibOutputFile, xExtent = [-5, 5], yExtent = [-5, 5], top = 0,
+    bottom = 0, left = 0, right = 0, width = 450, height = 450, element = "body"
     ) {
     /**
      * Visualize hive plot from JSON output generated from python Hiveplotlib.
@@ -268,19 +247,11 @@ export function visualizeHivePlot(
      * @param  {String} element The element into which the resulting
      * SVG element will be added. Default "body".
      * @return {} the resulting SVG object with a d3 hive plot.
+     * @todo: expose any kwarg handling in lower-level methods in this top-level method.
      */
-    var xExtent = [-5, 5],
-        yExtent = [-5, 5],
-        top = 0,
-        bottom = 0,
-        left = 0,
-        right = 0,
-        width = 450,
-        height = 450,
-        element = "body";
     var svgInputs = initializeSVG(
-        xExtent=xExtent, yExtent=yExtent, top=top, bottom=bottom,
-        left=left, right=right, width=width, height=height, element=element
+        xExtent, yExtent, top, bottom,
+        left, right, width, height, element
     );
     
     d3.json(hiveplotlibOutputFile).then(function(data) {
@@ -306,5 +277,3 @@ export function visualizeHivePlot(
 
     return svgInputs["svgInfo"].svg();
 }
-
-// export {marcon, initializeSVG, plotAxes, plotEdges, plotNodes, visualizeHivePlot}
