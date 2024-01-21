@@ -134,13 +134,13 @@ export function plotAxes(data, svg, x, y) {
      * @param {d3.scaleLinear} y d3 y axis.
      * @return {null} Nothing returned as changes will be made
      * directly to the svg input.
+     * @todo: pass along line kwargs to each axis.
      */
 
     var axisNames = Object.keys(data.axes);
     for (let i = 0; i < axisNames.length; i++){
         var start = data.axes[axisNames[i]].start;
         var end = data.axes[axisNames[i]].end;
-        /* TODO: call scalings more DRY */
         var scaledStart = [x(start[0]), y(start[1])];
         var scaledEnd = [x(end[0]), y(end[1])];
 
@@ -165,6 +165,7 @@ export function plotNodes(data, svg, x, y) {
      * @param {d3.scaleLinear} y d3 y axis.
      * @return {null} Nothing returned as changes will be made
      * directly to the svg input.
+     * @todo: pass along node kwargs to each node.
      */
 
     var axisNames = Object.keys(data.axes);
@@ -193,7 +194,8 @@ export function plotEdges(data, svg, x, y) {
      * @param {d3.scaleLinear} y d3 y axis.
      * @return {null} Nothing returned as changes will be made
      * directly to the svg input.
-     * @todo: pass along other edge kwargs to each edge
+     * @todo: pass along other edge kwargs to each edge.
+     * @todo: don't hard-code edge color kwarg; expose to user.
      */
 
     var axisNames = Object.keys(data.edges);
@@ -245,6 +247,7 @@ export default function visualizeHivePlot(
      * @param  {String} element The element into which the resulting
      * SVG element will be added. Default "body".
      * @return {} the resulting SVG object with a d3 hive plot.
+     * @todo: expose any kwarg handling in lower-level methods in this top-level method.
      */
     var svgInputs = initializeSVG(
         xExtent, yExtent, top, bottom,
