@@ -146,9 +146,6 @@ export function plotAxes(data, svg, x, y) {
 
         var myLine = d3.line()([scaledStart, scaledEnd]);
 
-        console.log("plotting line");
-        console.log(myLine);
-
         svg.append("path")
             .datum(data)
             .attr("d", myLine)
@@ -169,8 +166,6 @@ export function plotNodes(data, svg, x, y) {
      * @return {null} Nothing returned as changes will be made
      * directly to the svg input.
      */
-
-    console.log("plotting nodes");
 
     var axisNames = Object.keys(data.axes);
     for (let i = 0; i < axisNames.length; i++){
