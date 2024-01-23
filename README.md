@@ -37,3 +37,11 @@ There are obvious improvements that can and should be made, most notably:
   example, `"line_width"` could also come through as `"lw"`, `"width"`, and `"linewidth"`.
 
 * Supporting *both* in-memory data in addition to data on disk would be a nice improvement.
+
+### A Note on `example_hive_plot.json`
+
+`example_hive_plot.json` is referenced in the Hiveplotlib documentation. Although in a different repository, this file
+is mirrored in Hiveplotlib and tested weekly through Continuous Integration to ensure that the JSON data output in
+Hiveplotlib matches the JSON data in this repository.
+
+Should the JSON output ever be changed in Hiveplotlib, it will be changed here as well.
