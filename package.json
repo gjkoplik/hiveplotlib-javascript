@@ -1,0 +1,20 @@
+{
+  "name": "@hiveplotlib/d3",
+  "version": "0.2.0",
+  "description": "D3.js visualization for hiveplotlib JSON exports",
+  "type": "module",
+  "main": "hive_plots_d3_viz.js",
+  "scripts": {
+    "test": "vitest run --coverage",
+    "test:watch": "vitest",
+    "build": "esbuild hive_plots_d3_viz.js --bundle --minify --format=esm --external:https://cdn.jsdelivr.net/npm/d3@7/+esm --outfile=hive_plots_d3_viz.min.js"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^3.2.4",
+    "d3": "^7.0.0",
+    "esbuild": "^0.24.0",
+    "jsdom": "^25.0.0",
+    "vitest": "^3.0.0"
+  },
+  "license": "MIT"
+}
