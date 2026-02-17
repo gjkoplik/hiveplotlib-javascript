@@ -14,6 +14,10 @@ Formalized support for the full `hiveplotlib` visual keyword arguments, added a 
 
 - Full handling of `hiveplotlib` edge kwargs: `color`, `alpha`, `linewidth`, `linestyle`, and
   colormap (`cmap`/`array`/`clim`) — all now rendered faithfully in SVG.
+- Support for data-dependent edge kwargs: edge kwargs whose values reference a column name in the
+  edge data (e.g. `array="low"`) are resolved to per-edge numeric arrays by `HivePlot.to_json()`;
+  the JS renderer handles these arrays seamlessly via the existing `array`+`cmap`+`clim` colormap
+  path. The `full_kwargs_hive_plot.json` fixture now demonstrates this pattern.
 - Full handling of `hiveplotlib` node kwargs: fill color (`facecolor`/`color`/`c`), `size`/`s`,
   `alpha`, `edgecolor`, and colormap support.
 - Kwarg normalization utilities (`normalizeEdgeKwargs`, `normalizeNodeKwargs`) to handle

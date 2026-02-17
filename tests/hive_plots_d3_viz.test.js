@@ -643,6 +643,81 @@ describe("plotEdges", () => {
         expect(edges[0].getAttribute("stroke")).not.toBe(edges[1].getAttribute("stroke"));
     });
 
+    it("should apply data-dependent edge kwargs (array + cmap + per-edge alpha)", () => {
+        // Simulates output of to_json() with data-dependent array resolved from edge data column
+        // alongside explicit per-edge alpha arrays (the combination produced by
+        // update_edge_plotting_keyword_arguments + add_edge_kwargs)
+        const data = {
+            axes: {
+                A: { start: [1, 0], end: [5, 0], nodes: { unique_id: [0, 1, 2], x: [2, 3, 4], y: [0, 0, 0] } },
+                B: { start: [0, 1], end: [0, 5], nodes: { unique_id: [3, 4, 5], x: [0, 0, 0], y: [2, 3, 4] } },
+            },
+            edges: {
+                A: { B: { "0": {
+                    ids: [[0, 3], [1, 4], [2, 5]],
+                    curves: [[[2, 0], [1, 1], [0, 2]], [[3, 0], [1.5, 1.5], [0, 3]], [[4, 0], [2, 2], [0, 4]]],
+                    edge_kwargs: {
+                        array: [3.5, 7.0, 5.2],
+                        cmap: "cividis",
+                        clim: [0, 10],
+                        alpha: [0.3, 0.6, 0.9],
+                        linewidth: 2.0,
+                    },
+                } } },
+            },
+        };
+        const { svg, x, y } = getTestSVG();
+        plotEdges(data, svg, x, y);
+
+        const edges = document.querySelectorAll("path.edge");
+        expect(edges.length).toBe(3);
+        // Colors should come from cividis colormap (not default black)
+        for (const edge of edges) {
+            expect(edge.getAttribute("stroke")).toMatch(/^(rgb|#)/);
+            expect(edge.getAttribute("stroke")).not.toBe("black");
+        }
+        // Different array values should produce different colors
+        expect(edges[0].getAttribute("stroke")).not.toBe(edges[1].getAttribute("stroke"));
+        // Per-edge alpha should be applied
+        expect(parseFloat(edges[0].getAttribute("stroke-opacity"))).toBeCloseTo(0.3, 1);
+        expect(parseFloat(edges[1].getAttribute("stroke-opacity"))).toBeCloseTo(0.6, 1);
+        expect(parseFloat(edges[2].getAttribute("stroke-opacity"))).toBeCloseTo(0.9, 1);
+        // Scalar linewidth should be applied to all
+        for (const edge of edges) {
+            expect(parseFloat(edge.getAttribute("stroke-width"))).toBeCloseTo(2.0, 1);
+        }
+    });
+
+    it("should use colormap array over explicit color when both present", () => {
+        // When both array+cmap and color are present, array+cmap takes priority
+        const data = {
+            axes: {
+                A: { start: [1, 0], end: [5, 0], nodes: { unique_id: [0, 1], x: [2, 4], y: [0, 0] } },
+                B: { start: [0, 1], end: [0, 5], nodes: { unique_id: [2, 3], x: [0, 0], y: [2, 4] } },
+            },
+            edges: {
+                A: { B: { "0": {
+                    ids: [[0, 2], [1, 3]],
+                    curves: [[[2, 0], [1, 1], [0, 2]], [[4, 0], [2, 2], [0, 4]]],
+                    edge_kwargs: {
+                        array: [0.2, 0.8],
+                        cmap: "viridis",
+                        clim: [0.0, 1.0],
+                        color: ["#FF0000", "#0000FF"],
+                    },
+                } } },
+            },
+        };
+        const { svg, x, y } = getTestSVG();
+        plotEdges(data, svg, x, y);
+
+        const edges = document.querySelectorAll("path.edge");
+        // Colors should come from viridis colormap, NOT from explicit color array
+        expect(edges[0].getAttribute("stroke")).not.toBe("#FF0000");
+        expect(edges[1].getAttribute("stroke")).not.toBe("#0000FF");
+        expect(edges[0].getAttribute("stroke")).toMatch(/^(rgb|#)/);
+    });
+
     it("should apply stroke-dasharray for dashed linestyle", () => {
         // Inline data: linestyle "--"
         const data = {
@@ -897,6 +972,27 @@ describe("visualizeHivePlot", () => {
         expect(document.querySelectorAll("circle.node").length).toBe(numNodes);
         expect(document.querySelectorAll("path.edge").length).toBe(countEdges(data));
         expect(document.querySelectorAll("text.axis-label").length).toBe(numAxes);
+    });
+
+    it("should render full_kwargs fixture with data-dependent edge color, alpha, and linewidth", () => {
+        const data = loadFixture("full_kwargs_hive_plot.json");
+        const { svg, x, y } = getTestSVG();
+        plotEdges(data, svg, x, y);
+
+        const edges = document.querySelectorAll("path.edge");
+        expect(edges.length).toBe(countEdges(data));
+        for (const edge of edges) {
+            // Color should come from cividis colormap (array+cmap), not default black
+            expect(edge.getAttribute("stroke")).toMatch(/^(rgb|#)/);
+            expect(edge.getAttribute("stroke")).not.toBe("black");
+            // Alpha should come from per-edge "alpha_scaled" column (~0.3-1.0), not default 0.5
+            const alpha = parseFloat(edge.getAttribute("stroke-opacity"));
+            expect(alpha).toBeGreaterThan(0);
+            expect(alpha).toBeLessThanOrEqual(1);
+            // Linewidth should come from per-edge "lw_scaled" column (~1.0-3.3), not default 1.5
+            const lw = parseFloat(edge.getAttribute("stroke-width"));
+            expect(lw).toBeGreaterThan(0);
+        }
     });
 
 });
