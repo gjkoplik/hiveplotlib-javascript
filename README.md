@@ -31,8 +31,8 @@ From a browser or Jupyter notebook (via CDN):
 ```javascript
 import visualizeHivePlot from "https://cdn.jsdelivr.net/gh/gjkoplik/hiveplotlib-javascript/hive_plots_d3_viz.min.js";
 
-// from a URL
-visualizeHivePlot(
+// from a URL (async — awaits data loading before rendering)
+await visualizeHivePlot(
   "example_hive_plot.json",
   [-6, 6],
   [-6, 6],
@@ -46,7 +46,7 @@ visualizeHivePlot(
 );
 
 // from an in-memory object
-visualizeHivePlot(
+await visualizeHivePlot(
   data,
   [-6, 6],
   [-6, 6],

@@ -23,12 +23,30 @@
     "d3": "^7.0.0",
     "esbuild": "^0.27.3",
     "eslint": "^10.0.0",
-    "eslint-config-prettier": "^6.15.0",
     "husky": "^9.1.7",
     "jsdom": "^25.0.0",
     "lint-staged": "^16.2.7",
     "prettier": "^3.8.1",
     "vitest": "^3.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gjkoplik/hiveplotlib-javascript.git"
+  },
+  "homepage": "https://github.com/gjkoplik/hiveplotlib-javascript",
+  "bugs": {
+    "url": "https://github.com/gjkoplik/hiveplotlib-javascript/issues"
+  },
+  "keywords": [
+    "hive-plot",
+    "d3",
+    "visualization",
+    "network",
+    "hiveplotlib"
+  ],
+  "author": "Gary Koplik",
+  "engines": {
+    "node": ">=18"
   },
   "license": "MIT"
 }

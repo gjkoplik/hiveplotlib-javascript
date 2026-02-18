@@ -31,6 +31,9 @@ Formalized support for the full `hiveplotlib` visual keyword arguments, added a 
 
 ## Changed
 
+- `visualizeHivePlot` is now `async` and returns `Promise<SVG selection>`. When called with a
+  URL string, it now `await`s the data load before rendering, so callers can reliably interact
+  with the SVG immediately after `await visualizeHivePlot(...)`.
 - `visualizeHivePlot` first parameter renamed from `hiveplotlibOutputFile` to `hiveplotlibOutput` to reflect that it now accepts both strings and objects.
 - `plotEdges` now reads all edge kwargs from the JSON instead of hard-coding color; gracefully skips entries with no edge data.
 - `plotNodes` uses `selectAll(null)` to avoid D3 data-join conflicts across axes; reads `node_viz_kwargs` for per-axis styling.
@@ -50,13 +53,14 @@ Formalized support for the full `hiveplotlib` visual keyword arguments, added a 
 - `package.json` with npm scripts (`test`, `test:watch`, `build`).
 - Minified ESM bundle build via esbuild (`npm run build`).
 - `.gitignore` for `node_modules` and test coverage.
-- ESLint (`eslint.config.js`) with the recommended ruleset and `eslint-config-prettier`.
+- ESLint (`eslint.config.js`) with the recommended ruleset.
 - Prettier (`.prettierrc`, `.prettierignore`) for consistent code formatting.
 - Pre-commit hook via husky + lint-staged — runs Prettier and ESLint on staged files.
 - VS Code workspace settings (`.vscode/settings.json`) for format-on-save and recommended
   extensions (`esbenp.prettier-vscode`, `dbaeumer.vscode-eslint`).
 - Dependabot (`.github/dependabot.yml`) for weekly npm and GitHub Actions dependency updates.
-- `npm audit --audit-level=high` step in CI.
+- `npm audit --audit-level=high` step in CI (set to `high` because the only moderate-severity
+  finding is a ReDoS in `ajv`, a transitive dev dependency of ESLint — not shipped to consumers).
 - Lint and format-check steps in CI.
 - Test coverage reporting on PRs via `davelosert/vitest-coverage-report-action`.
 

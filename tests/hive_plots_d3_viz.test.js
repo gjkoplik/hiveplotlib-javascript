@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { readFileSync } from "fs";
 import { resolve } from "path";
 import {
@@ -15,6 +15,12 @@ import {
   scatterSizeToRadius,
 } from "../hive_plots_d3_viz.js";
 import visualizeHivePlot from "../hive_plots_d3_viz.js";
+import * as d3 from "d3";
+
+vi.mock("https://cdn.jsdelivr.net/npm/d3@7/+esm", async (importOriginal) => {
+  const actual = await importOriginal();
+  return { ...actual };
+});
 
 // ---------------------------------------------------------------------------
 // Fixture loading helpers
@@ -137,6 +143,23 @@ describe("normalizeNodeKwargs", () => {
     normalizeNodeKwargs(input);
     expect(input.c).toBe("red");
   });
+
+  it("should remove lower-priority color keys when higher priority wins", () => {
+    const result = normalizeNodeKwargs({
+      facecolor: "green",
+      color: "blue",
+      c: "red",
+    });
+    expect(result._fill).toBe("green");
+    expect(result.color).toBeUndefined();
+    expect(result.c).toBeUndefined();
+    expect(result.facecolor).toBeUndefined();
+
+    const result2 = normalizeNodeKwargs({ color: "blue", c: "red" });
+    expect(result2._fill).toBe("blue");
+    expect(result2.c).toBeUndefined();
+    expect(result2.color).toBeUndefined();
+  });
 });
 
 describe("linestyleToDasharray", () => {
@@ -238,6 +261,7 @@ describe("marcon", () => {
     expect(m.bottom()).toBe(40);
     expect(m.width()).toBe(500);
     expect(m.height()).toBe(400);
+    expect(m.element()).toBe("body");
   });
 
   it("should compute innerWidth and innerHeight correctly", () => {
@@ -519,6 +543,40 @@ describe("plotNodes", () => {
     expect(nodes[1].getAttribute("fill")).toBe("purple");
   });
 
+  it("should apply per-node alpha array from node_viz_kwargs", () => {
+    const data = {
+      axes: {
+        A: {
+          start: [1, 0],
+          end: [5, 0],
+          angle: 0,
+          long_name: "A",
+          nodes: { unique_id: [0, 1, 2], x: [2, 3, 4], y: [0, 0, 0] },
+        },
+      },
+      edges: {},
+      node_viz_kwargs: {
+        A: { alpha: [0.2, 0.5, 0.9] },
+      },
+    };
+    const { svg, x, y } = getTestSVG();
+    plotNodes(data, svg, x, y);
+
+    const nodes = document.querySelectorAll("circle.node");
+    expect(parseFloat(nodes[0].getAttribute("fill-opacity"))).toBeCloseTo(
+      0.2,
+      1,
+    );
+    expect(parseFloat(nodes[1].getAttribute("fill-opacity"))).toBeCloseTo(
+      0.5,
+      1,
+    );
+    expect(parseFloat(nodes[2].getAttribute("fill-opacity"))).toBeCloseTo(
+      0.9,
+      1,
+    );
+  });
+
   it("should handle axis with zero nodes gracefully", () => {
     const data = {
       axes: {
@@ -534,6 +592,31 @@ describe("plotNodes", () => {
     // Should not throw
     plotNodes(data, svg, x, y);
     expect(document.querySelectorAll("circle.node").length).toBe(0);
+  });
+
+  it("should apply per-node edgecolor array from node_viz_kwargs", () => {
+    const data = {
+      axes: {
+        A: {
+          start: [1, 0],
+          end: [5, 0],
+          angle: 0,
+          long_name: "A",
+          nodes: { unique_id: [0, 1, 2], x: [2, 3, 4], y: [0, 0, 0] },
+        },
+      },
+      edges: {},
+      node_viz_kwargs: {
+        A: { edgecolor: ["red", "blue", "green"] },
+      },
+    };
+    const { svg, x, y } = getTestSVG();
+    plotNodes(data, svg, x, y);
+
+    const nodes = document.querySelectorAll("circle.node");
+    expect(nodes[0].getAttribute("stroke")).toBe("red");
+    expect(nodes[1].getAttribute("stroke")).toBe("blue");
+    expect(nodes[2].getAttribute("stroke")).toBe("green");
   });
 });
 
@@ -1091,6 +1174,115 @@ describe("plotEdges", () => {
     plotEdges(data, svg, x, y);
     expect(document.querySelectorAll("path.edge").length).toBe(0);
   });
+
+  it("should fall back to d3.extent when clim is absent with array + cmap", () => {
+    const data = {
+      axes: {
+        A: {
+          start: [1, 0],
+          end: [5, 0],
+          nodes: { unique_id: [0, 1], x: [2, 4], y: [0, 0] },
+        },
+        B: {
+          start: [0, 1],
+          end: [0, 5],
+          nodes: { unique_id: [2, 3], x: [0, 0], y: [2, 4] },
+        },
+      },
+      edges: {
+        A: {
+          B: {
+            0: {
+              ids: [
+                [0, 2],
+                [1, 3],
+              ],
+              curves: [
+                [
+                  [2, 0],
+                  [1, 1],
+                  [0, 2],
+                ],
+                [
+                  [4, 0],
+                  [2, 2],
+                  [0, 4],
+                ],
+              ],
+              edge_kwargs: {
+                array: [0.2, 0.8],
+                cmap: "viridis",
+              },
+            },
+          },
+        },
+      },
+    };
+    const { svg, x, y } = getTestSVG();
+    plotEdges(data, svg, x, y);
+
+    const edges = document.querySelectorAll("path.edge");
+    expect(edges[0].getAttribute("stroke")).toMatch(/^(rgb|#)/);
+    expect(edges[1].getAttribute("stroke")).toMatch(/^(rgb|#)/);
+    expect(edges[0].getAttribute("stroke")).not.toBe(
+      edges[1].getAttribute("stroke"),
+    );
+  });
+
+  it("should apply per-edge linestyle array", () => {
+    const data = {
+      axes: {
+        A: {
+          start: [1, 0],
+          end: [5, 0],
+          nodes: { unique_id: [0, 1, 2], x: [2, 3, 4], y: [0, 0, 0] },
+        },
+        B: {
+          start: [0, 1],
+          end: [0, 5],
+          nodes: { unique_id: [3, 4, 5], x: [0, 0, 0], y: [2, 3, 4] },
+        },
+      },
+      edges: {
+        A: {
+          B: {
+            0: {
+              ids: [
+                [0, 3],
+                [1, 4],
+                [2, 5],
+              ],
+              curves: [
+                [
+                  [2, 0],
+                  [1, 1],
+                  [0, 2],
+                ],
+                [
+                  [3, 0],
+                  [1.5, 1.5],
+                  [0, 3],
+                ],
+                [
+                  [4, 0],
+                  [2, 2],
+                  [0, 4],
+                ],
+              ],
+              edge_kwargs: { linestyle: ["--", ":", "-"] },
+            },
+          },
+        },
+      },
+    };
+    const { svg, x, y } = getTestSVG();
+    plotEdges(data, svg, x, y);
+
+    const edges = document.querySelectorAll("path.edge");
+    expect(edges[0].getAttribute("stroke-dasharray")).toBe("5,5");
+    expect(edges[1].getAttribute("stroke-dasharray")).toBe("2,2");
+    expect(edges[2].getAttribute("stroke-dasharray")).toBeNull();
+  });
 });
 
 // ===========================================================================
@@ -1227,9 +1419,20 @@ describe("visualizeHivePlot", () => {
     document.body.innerHTML = "";
   });
 
-  it("should render all elements with in-memory data", () => {
+  it("should render all elements with in-memory data", async () => {
     const data = loadFixture("minimal_hive_plot.json");
-    visualizeHivePlot(data, [-5, 5], [-5, 5], 0, 0, 0, 0, 450, 450, "body");
+    await visualizeHivePlot(
+      data,
+      [-5, 5],
+      [-5, 5],
+      0,
+      0,
+      0,
+      0,
+      450,
+      450,
+      "body",
+    );
 
     const numAxes = Object.keys(data.axes).length;
     let numNodes = 0;
@@ -1245,11 +1448,23 @@ describe("visualizeHivePlot", () => {
     expect(document.querySelectorAll("text.axis-label").length).toBe(numAxes);
   });
 
-  it("should suppress labels when showLabels is false", () => {
+  it("should suppress labels when showLabels is false", async () => {
     const data = loadFixture("minimal_hive_plot.json");
-    visualizeHivePlot(data, [-5, 5], [-5, 5], 0, 0, 0, 0, 450, 450, "body", {
-      showLabels: false,
-    });
+    await visualizeHivePlot(
+      data,
+      [-5, 5],
+      [-5, 5],
+      0,
+      0,
+      0,
+      0,
+      450,
+      450,
+      "body",
+      {
+        showLabels: false,
+      },
+    );
 
     expect(document.querySelectorAll("path.axis").length).toBe(
       Object.keys(data.axes).length,
@@ -1257,9 +1472,9 @@ describe("visualizeHivePlot", () => {
     expect(document.querySelectorAll("text.axis-label").length).toBe(0);
   });
 
-  it("should return an SVG selection", () => {
+  it("should return an SVG selection", async () => {
     const data = loadFixture("minimal_hive_plot.json");
-    const result = visualizeHivePlot(
+    const result = await visualizeHivePlot(
       data,
       [-5, 5],
       [-5, 5],
@@ -1274,9 +1489,20 @@ describe("visualizeHivePlot", () => {
     expect(result).toBeDefined();
   });
 
-  it("should render full_kwargs data correctly", () => {
+  it("should render full_kwargs data correctly", async () => {
     const data = loadFixture("full_kwargs_hive_plot.json");
-    visualizeHivePlot(data, [-5, 5], [-5, 5], 0, 0, 0, 0, 450, 450, "body");
+    await visualizeHivePlot(
+      data,
+      [-5, 5],
+      [-5, 5],
+      0,
+      0,
+      0,
+      0,
+      450,
+      450,
+      "body",
+    );
 
     const numAxes = Object.keys(data.axes).length;
     let numNodes = 0;
@@ -1311,6 +1537,34 @@ describe("visualizeHivePlot", () => {
       const lw = parseFloat(edge.getAttribute("stroke-width"));
       expect(lw).toBeGreaterThan(0);
     }
+  });
+
+  it("should load data from URL string via d3.json and render", async () => {
+    const data = loadFixture("minimal_hive_plot.json");
+    const spy = vi.spyOn(d3, "json").mockResolvedValue(data);
+
+    await visualizeHivePlot(
+      "http://example.com/data.json",
+      [-5, 5],
+      [-5, 5],
+      0,
+      0,
+      0,
+      0,
+      450,
+      450,
+      "body",
+    );
+
+    expect(spy).toHaveBeenCalledWith("http://example.com/data.json");
+    expect(document.querySelectorAll("path.axis").length).toBe(
+      Object.keys(data.axes).length,
+    );
+    expect(document.querySelectorAll("circle.node").length).toBeGreaterThan(0);
+    expect(document.querySelectorAll("path.edge").length).toBe(
+      countEdges(data),
+    );
+    spy.mockRestore();
   });
 });
 

@@ -36,9 +36,12 @@ export function normalizeNodeKwargs(kwargs) {
   if ("facecolor" in normalized) {
     normalized._fill = normalized.facecolor;
     delete normalized.facecolor;
+    delete normalized.color;
+    delete normalized.c;
   } else if ("color" in normalized) {
     normalized._fill = normalized.color;
     delete normalized.color;
+    delete normalized.c;
   } else if ("c" in normalized) {
     normalized._fill = normalized.c;
     delete normalized.c;
@@ -560,7 +563,7 @@ export function plotLabels(data, svg, x, y, options = {}) {
 // Main entry point
 // ---------------------------------------------------------------------------
 
-export default function visualizeHivePlot(
+export default async function visualizeHivePlot(
   hiveplotlibOutput,
   xExtent = [-5, 5],
   yExtent = [-5, 5],
@@ -598,7 +601,7 @@ export default function visualizeHivePlot(
    * @param  {number} options.labelsBuffer Radial buffer multiplier for
    * label placement. Default 1.1.
    * @param  {number} options.fontSize Font size for labels. Default 14.
-   * @return {} the resulting SVG object with a d3 hive plot.
+   * @return {Promise<Object>} the resulting SVG selection with a d3 hive plot.
    */
   const { showLabels = true, labelsBuffer = 1.1, fontSize = 14 } = options;
 
@@ -628,11 +631,9 @@ export default function visualizeHivePlot(
   };
 
   if (typeof hiveplotlibOutput === "string") {
-    /* c8 ignore next 2 -- only untested line is d3.json(url).then(render);
-           render() itself is fully tested via the in-memory object branch below */
-    d3.json(hiveplotlibOutput).then(render);
+    const data = await d3.json(hiveplotlibOutput);
+    render(data);
   } else {
-    // In-memory JS object
     render(hiveplotlibOutput);
   }
 
