@@ -7,6 +7,7 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       include: ["hive_plots_d3_viz.js"],
+      reporter: ["text", "json-summary"],
     },
   },
   resolve: {
