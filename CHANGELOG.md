@@ -37,7 +37,6 @@ Formalized support for the full `hiveplotlib` visual keyword arguments, added a 
 - `plotAxes` adds `stroke-opacity: 0.5` and removes unnecessary `.datum()` binding.
 - Replaced `var` with `const`/`let` throughout.
 - Updated `example_hive_plot.json` to include `angle`, `long_name`, `node_viz_kwargs`, and `edge_kwargs` fields from `hiveplotlib >= 0.26.0`.
-- Rewrote `README.md` with feature list, setup/usage instructions, and CDN import examples.
 
 ## Tooling Changes
 
@@ -50,16 +49,14 @@ Formalized support for the full `hiveplotlib` visual keyword arguments, added a 
   and 22.
 - `package.json` with npm scripts (`test`, `test:watch`, `build`).
 - Minified ESM bundle build via esbuild (`npm run build`).
-- `CONTRIBUTING.md` with development workflow, project structure, and fixture regeneration
-  instructions.
-- `.gitignore` for `node_modules`.
+- `.gitignore` for `node_modules` and test coverage.
 - ESLint (`eslint.config.js`) with the recommended ruleset and `eslint-config-prettier`.
 - Prettier (`.prettierrc`, `.prettierignore`) for consistent code formatting.
 - Pre-commit hook via husky + lint-staged — runs Prettier and ESLint on staged files.
 - VS Code workspace settings (`.vscode/settings.json`) for format-on-save and recommended
   extensions (`esbenp.prettier-vscode`, `dbaeumer.vscode-eslint`).
 - Dependabot (`.github/dependabot.yml`) for weekly npm and GitHub Actions dependency updates.
-- `npm audit --audit-level=moderate` step in CI.
+- `npm audit --audit-level=high` step in CI.
 - Lint and format-check steps in CI.
 - Test coverage reporting on PRs via `davelosert/vitest-coverage-report-action`.
 
