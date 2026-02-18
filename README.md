@@ -10,11 +10,11 @@ then you can point a front-end team to this resource to accelerate the integrati
 
 ## Features
 
-* Renders `hiveplotlib.HivePlot` JSON exports using D3.js.
-* Supports all `hiveplotlib` visual keyword arguments: edge color/alpha/linewidth/linestyle,
+- Renders `hiveplotlib.HivePlot` JSON exports using D3.js.
+- Supports all `hiveplotlib` visual keyword arguments: edge color/alpha/linewidth/linestyle,
   node color/size/alpha/edgecolor, and colormaps.
-* Accepts both file paths (loaded via `d3.json()`) and in-memory JavaScript objects.
-* Minified ESM bundle available (`hive_plots_d3_viz.min.js`).
+- Accepts both file paths (loaded via `d3.json()`) and in-memory JavaScript objects.
+- Minified ESM bundle available (`hive_plots_d3_viz.min.js`).
 
 ## Setup
 
@@ -32,14 +32,37 @@ From a browser or Jupyter notebook (via CDN):
 import visualizeHivePlot from "https://cdn.jsdelivr.net/gh/gjkoplik/hiveplotlib-javascript/hive_plots_d3_viz.min.js";
 
 // from a URL
-visualizeHivePlot("example_hive_plot.json", [-6, 6], [-6, 6], 20, 0, 0, 0, 550, 550, "my-container");
+visualizeHivePlot(
+  "example_hive_plot.json",
+  [-6, 6],
+  [-6, 6],
+  20,
+  0,
+  0,
+  0,
+  550,
+  550,
+  "my-container",
+);
 
 // from an in-memory object
-visualizeHivePlot(data, [-6, 6], [-6, 6], 20, 0, 0, 0, 550, 550, "my-container", {
-  showLabels: true,
-  labelsBuffer: 1.1,
-  fontSize: 14,
-});
+visualizeHivePlot(
+  data,
+  [-6, 6],
+  [-6, 6],
+  20,
+  0,
+  0,
+  0,
+  550,
+  550,
+  "my-container",
+  {
+    showLabels: true,
+    labelsBuffer: 1.1,
+    fontSize: 14,
+  },
+);
 ```
 
 See the [Hiveplotlib documentation](https://hiveplotlib.readthedocs.io/) for an introduction to Hive Plots,

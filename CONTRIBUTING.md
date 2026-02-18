@@ -2,8 +2,8 @@
 
 ## Prerequisites
 
-* Node.js 18+
-* npm
+- Node.js 18+
+- npm
 
 ## Setup
 
@@ -12,6 +12,27 @@ npm install
 ```
 
 ## Development Workflow
+
+### Code Quality
+
+This project uses **ESLint** for linting and **Prettier** for formatting. A pre-commit
+hook (via husky + lint-staged) automatically runs both on staged files, so most issues
+are caught before they reach CI.
+
+```bash
+# lint
+npm run lint
+
+# auto-format everything
+npm run format
+
+# check formatting without writing (used in CI)
+npm run format:check
+```
+
+If you use VS Code, the repo includes recommended extensions (`esbenp.prettier-vscode`
+and `dbaeumer.vscode-eslint`) and workspace settings that enable format-on-save. VS Code
+should prompt you to install them when you first open the project.
 
 ### 1. Run the test suite
 
@@ -60,6 +81,12 @@ tests/
     multi_tag_hive_plot.json
     full_kwargs_hive_plot.json
 .github/workflows/ci.yml       # GitHub Actions CI (Node 18/20/22)
+.github/dependabot.yml         # Dependabot config (npm + actions)
+eslint.config.js               # ESLint flat config
+.prettierrc                    # Prettier config
+.prettierignore                # files Prettier should skip
+.husky/pre-commit              # pre-commit hook (runs lint-staged)
+.vscode/                       # VS Code workspace settings + recommended extensions
 ```
 
 ## Test Fixtures
@@ -68,11 +95,11 @@ The JSON files under `tests/fixtures/` and `example_hive_plot.json` are **genera
 Python** from the `hiveplotlib` repository, not hand-crafted. Each fixture has a
 corresponding static method in `hiveplotlib.datasets`:
 
-| Fixture | Static Method |
-|---|---|
-| `example_hive_plot.json` | `example_hive_plot()` |
-| `minimal_hive_plot.json` | `example_minimal_hive_plot()` |
-| `multi_tag_hive_plot.json` | `example_multi_tag_hive_plot()` |
+| Fixture                      | Static Method                     |
+| ---------------------------- | --------------------------------- |
+| `example_hive_plot.json`     | `example_hive_plot()`             |
+| `minimal_hive_plot.json`     | `example_minimal_hive_plot()`     |
+| `multi_tag_hive_plot.json`   | `example_multi_tag_hive_plot()`   |
 | `full_kwargs_hive_plot.json` | `example_full_kwargs_hive_plot()` |
 
 The `hiveplotlib` test suite verifies that each hive plot's `to_json()` output matches
@@ -105,4 +132,5 @@ URL as external so the minified bundle also preserves this import.
 ## CI
 
 GitHub Actions runs on push/PR to `main` across Node 18, 20, and 22. The CI job runs
-`npm ci`, `npm test`, and `npm run build`.
+linting, format checking, tests (with coverage), `npm audit`, and the production build.
+Dependabot is configured to open weekly PRs for npm and GitHub Actions dependency updates.

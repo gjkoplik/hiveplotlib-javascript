@@ -1,8 +1,6 @@
-Hiveplotlib-JavaScript Change Log
-=================================
+# Hiveplotlib-JavaScript Change Log
 
 All notable changes to this project will be documented in this file.
-
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
@@ -55,6 +53,15 @@ Formalized support for the full `hiveplotlib` visual keyword arguments, added a 
 - `CONTRIBUTING.md` with development workflow, project structure, and fixture regeneration
   instructions.
 - `.gitignore` for `node_modules`.
+- ESLint (`eslint.config.js`) with the recommended ruleset and `eslint-config-prettier`.
+- Prettier (`.prettierrc`, `.prettierignore`) for consistent code formatting.
+- Pre-commit hook via husky + lint-staged — runs Prettier and ESLint on staged files.
+- VS Code workspace settings (`.vscode/settings.json`) for format-on-save and recommended
+  extensions (`esbenp.prettier-vscode`, `dbaeumer.vscode-eslint`).
+- Dependabot (`.github/dependabot.yml`) for weekly npm and GitHub Actions dependency updates.
+- `npm audit --audit-level=moderate` step in CI.
+- Lint and format-check steps in CI.
+- Test coverage reporting on PRs via `davelosert/vitest-coverage-report-action`.
 
 # 0.1.1 (Released Jun 28, 2025)
 

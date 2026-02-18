@@ -1,102 +1,142 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>hiveplotlib-javascript dev</title>
-  <style>
-    body { font-family: sans-serif; margin: 2rem; }
-    .plot-section { margin-bottom: 2rem; }
-    .plot-section h2 { margin-bottom: 0.25rem; }
-    .plot-section p { margin-top: 0; color: #666; }
-  </style>
-</head>
-<body>
-  <h1>hiveplotlib D3 visualization</h1>
+  <head>
+    <meta charset="UTF-8" />
+    <title>hiveplotlib-javascript dev</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        margin: 2rem;
+      }
+      .plot-section {
+        margin-bottom: 2rem;
+      }
+      .plot-section h2 {
+        margin-bottom: 0.25rem;
+      }
+      .plot-section p {
+        margin-top: 0;
+        color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>hiveplotlib D3 visualization</h1>
 
-  <div class="plot-section">
-    <h2>example_hive_plot.json</h2>
-    <p>Default rendering with labels.</p>
-    <div id="example-default"></div>
-  </div>
+    <div class="plot-section">
+      <h2>example_hive_plot.json</h2>
+      <p>Default rendering with labels.</p>
+      <div id="example-default"></div>
+    </div>
 
-  <div class="plot-section">
-    <h2>example_hive_plot.json (no labels, larger margins)</h2>
-    <p>Same data, labels suppressed, extra margin.</p>
-    <div id="example-no-labels"></div>
-  </div>
+    <div class="plot-section">
+      <h2>example_hive_plot.json (no labels, larger margins)</h2>
+      <p>Same data, labels suppressed, extra margin.</p>
+      <div id="example-no-labels"></div>
+    </div>
 
-  <div class="plot-section">
-    <h2>minimal_hive_plot.json</h2>
-    <p>Minimal fixture: 3 axes, 6 nodes, few edges, uniform color.</p>
-    <div id="minimal"></div>
-  </div>
+    <div class="plot-section">
+      <h2>minimal_hive_plot.json</h2>
+      <p>Minimal fixture: 3 axes, 6 nodes, few edges, uniform color.</p>
+      <div id="minimal"></div>
+    </div>
 
-  <div class="plot-section">
-    <h2>multi_tag_hive_plot.json</h2>
-    <p>Two edge tags (red / blue) on the same axis pairs, with repeat axes.</p>
-    <div id="multi-tag"></div>
-  </div>
+    <div class="plot-section">
+      <h2>multi_tag_hive_plot.json</h2>
+      <p>
+        Two edge tags (red / blue) on the same axis pairs, with repeat axes.
+      </p>
+      <div id="multi-tag"></div>
+    </div>
 
-  <div class="plot-section">
-    <h2>full_kwargs_hive_plot.json</h2>
-    <p>Per-edge color/alpha arrays, node colormap (viridis), linewidth, edgecolor.</p>
-    <div id="full-kwargs"></div>
-  </div>
+    <div class="plot-section">
+      <h2>full_kwargs_hive_plot.json</h2>
+      <p>
+        Per-edge color/alpha arrays, node colormap (viridis), linewidth,
+        edgecolor.
+      </p>
+      <div id="full-kwargs"></div>
+    </div>
 
-  <script type="module">
-    import visualizeHivePlot from "./hive_plots_d3_viz.js";
+    <script type="module">
+      import visualizeHivePlot from "./hive_plots_d3_viz.js";
 
-    const ext = [-6, 6];
+      const ext = [-6, 6];
 
-    // 1. Example hive plot — default rendering with labels
-    visualizeHivePlot(
-      "example_hive_plot.json",
-      ext, ext,
-      20, 0, 0, 0,
-      550, 550,
-      "#example-default",
-      { showLabels: true, labelsBuffer: 1.1, fontSize: 14 }
-    );
+      // 1. Example hive plot — default rendering with labels
+      visualizeHivePlot(
+        "example_hive_plot.json",
+        ext,
+        ext,
+        20,
+        0,
+        0,
+        0,
+        550,
+        550,
+        "#example-default",
+        { showLabels: true, labelsBuffer: 1.1, fontSize: 14 },
+      );
 
-    // 2. Example hive plot — no labels, larger margins
-    visualizeHivePlot(
-      "example_hive_plot.json",
-      ext, ext,
-      40, 40, 40, 40,
-      550, 550,
-      "#example-no-labels",
-      { showLabels: false }
-    );
+      // 2. Example hive plot — no labels, larger margins
+      visualizeHivePlot(
+        "example_hive_plot.json",
+        ext,
+        ext,
+        40,
+        40,
+        40,
+        40,
+        550,
+        550,
+        "#example-no-labels",
+        { showLabels: false },
+      );
 
-    // 3. Minimal fixture
-    visualizeHivePlot(
-      "tests/fixtures/minimal_hive_plot.json",
-      ext, ext,
-      20, 0, 0, 0,
-      550, 550,
-      "#minimal",
-      { showLabels: true, labelsBuffer: 1.1, fontSize: 14 }
-    );
+      // 3. Minimal fixture
+      visualizeHivePlot(
+        "tests/fixtures/minimal_hive_plot.json",
+        ext,
+        ext,
+        20,
+        0,
+        0,
+        0,
+        550,
+        550,
+        "#minimal",
+        { showLabels: true, labelsBuffer: 1.1, fontSize: 14 },
+      );
 
-    // 4. Multi-tag fixture
-    visualizeHivePlot(
-      "tests/fixtures/multi_tag_hive_plot.json",
-      ext, ext,
-      20, 0, 0, 0,
-      550, 550,
-      "#multi-tag",
-      { showLabels: true, labelsBuffer: 1.1, fontSize: 14 }
-    );
+      // 4. Multi-tag fixture
+      visualizeHivePlot(
+        "tests/fixtures/multi_tag_hive_plot.json",
+        ext,
+        ext,
+        20,
+        0,
+        0,
+        0,
+        550,
+        550,
+        "#multi-tag",
+        { showLabels: true, labelsBuffer: 1.1, fontSize: 14 },
+      );
 
-    // 5. Full kwargs fixture
-    visualizeHivePlot(
-      "tests/fixtures/full_kwargs_hive_plot.json",
-      ext, ext,
-      20, 0, 0, 0,
-      550, 550,
-      "#full-kwargs",
-      { showLabels: true, labelsBuffer: 1.1, fontSize: 14 }
-    );
-  </script>
-</body>
+      // 5. Full kwargs fixture
+      visualizeHivePlot(
+        "tests/fixtures/full_kwargs_hive_plot.json",
+        ext,
+        ext,
+        20,
+        0,
+        0,
+        0,
+        550,
+        550,
+        "#full-kwargs",
+        { showLabels: true, labelsBuffer: 1.1, fontSize: 14 },
+      );
+    </script>
+  </body>
 </html>
