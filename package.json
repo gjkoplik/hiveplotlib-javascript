@@ -1,0 +1,52 @@
+{
+  "name": "@hiveplotlib/d3",
+  "version": "0.2.0",
+  "description": "D3.js visualization for hiveplotlib JSON exports",
+  "type": "module",
+  "main": "hive_plots_d3_viz.js",
+  "scripts": {
+    "test": "vitest run --coverage",
+    "test:watch": "vitest",
+    "build": "esbuild hive_plots_d3_viz.js --bundle --minify --format=esm --external:https://cdn.jsdelivr.net/npm/d3@7/+esm --outfile=hive_plots_d3_viz.min.js",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{js,json,md,yml,yaml}": "prettier --write",
+    "*.js": "eslint --fix"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "@vitest/coverage-v8": "^4.0.18",
+    "d3": "^7.0.0",
+    "esbuild": "^0.27.3",
+    "eslint": "^10.0.0",
+    "husky": "^9.1.7",
+    "jsdom": "^25.0.0",
+    "lint-staged": "^16.2.7",
+    "prettier": "^3.8.1",
+    "vitest": "^4.0.18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gjkoplik/hiveplotlib-javascript.git"
+  },
+  "homepage": "https://github.com/gjkoplik/hiveplotlib-javascript",
+  "bugs": {
+    "url": "https://github.com/gjkoplik/hiveplotlib-javascript/issues"
+  },
+  "keywords": [
+    "hive-plot",
+    "d3",
+    "visualization",
+    "network",
+    "hiveplotlib"
+  ],
+  "author": "Gary Koplik",
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT"
+}
