@@ -48,5 +48,11 @@
   "engines": {
     "node": ">=20"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "files": [
+    "hive_plots_d3_viz.js",
+    "hive_plots_d3_viz.min.js",
+    "LICENSE",
+    "README.md"
+  ]
 }
