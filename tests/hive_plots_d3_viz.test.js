@@ -343,7 +343,7 @@ describe("plotAxes", () => {
     }
   });
 
-  it("should handle data with many axes", () => {
+  it("should handle data with more (e.g. repeat) axes", () => {
     const data = loadFixture("full_kwargs_hive_plot.json");
     const { svg, x, y } = getTestSVG();
     plotAxes(data, svg, x, y);
@@ -415,7 +415,7 @@ describe("plotNodes", () => {
     const { svg, x, y } = getTestSVG();
     plotNodes(data, svg, x, y);
 
-    // All axes have c as numeric array + cmap="viridis"
+    // All nodes have c as numeric array + cmap="viridis"
     const nodes = document.querySelectorAll("circle.node");
     // Fill should be a color string from the viridis scale, not a number
     expect(nodes[0].getAttribute("fill")).toMatch(/^(rgb|#)/);
@@ -426,7 +426,7 @@ describe("plotNodes", () => {
     const { svg, x, y } = getTestSVG();
     plotNodes(data, svg, x, y);
 
-    // All axes have s: 30
+    // All nodes have s: 30
     const nodes = document.querySelectorAll("circle.node");
     expect(parseFloat(nodes[0].getAttribute("r"))).toBeCloseTo(
       scatterSizeToRadius(30),
@@ -439,7 +439,7 @@ describe("plotNodes", () => {
     const { svg, x, y } = getTestSVG();
     plotNodes(data, svg, x, y);
 
-    // All axes have alpha: 0.8
+    // All nodes have alpha: 0.8
     const nodes = document.querySelectorAll("circle.node");
     expect(parseFloat(nodes[0].getAttribute("fill-opacity"))).toBeCloseTo(
       0.8,
@@ -1525,18 +1525,29 @@ describe("visualizeHivePlot", () => {
 
     const edges = document.querySelectorAll("path.edge");
     expect(edges.length).toBe(countEdges(data));
+    const colors = new Set();
+    const alphas = new Set();
+    const linewidths = new Set();
     for (const edge of edges) {
       // Color should come from cividis colormap (array+cmap), not default black
-      expect(edge.getAttribute("stroke")).toMatch(/^(rgb|#)/);
-      expect(edge.getAttribute("stroke")).not.toBe("black");
+      const color = edge.getAttribute("stroke");
+      expect(color).toMatch(/^(rgb|#)/);
+      expect(color).not.toBe("black");
+      colors.add(color);
       // Alpha should come from per-edge "alpha_scaled" column (~0.3-1.0), not default 0.5
       const alpha = parseFloat(edge.getAttribute("stroke-opacity"));
       expect(alpha).toBeGreaterThan(0);
       expect(alpha).toBeLessThanOrEqual(1);
+      alphas.add(alpha);
       // Linewidth should come from per-edge "lw_scaled" column (~1.0-3.3), not default 1.5
       const lw = parseFloat(edge.getAttribute("stroke-width"));
       expect(lw).toBeGreaterThan(0);
+      linewidths.add(lw);
     }
+    // Per-edge data should produce varying values, not a single default
+    expect(colors.size).toBeGreaterThan(1);
+    expect(alphas.size).toBeGreaterThan(1);
+    expect(linewidths.size).toBeGreaterThan(1);
   });
 
   it("should load data from URL string via d3.json and render", async () => {

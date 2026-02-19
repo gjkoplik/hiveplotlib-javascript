@@ -4,6 +4,12 @@ import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 
 // ---------------------------------------------------------------------------
 // Kwarg mapping utilities (matplotlib -> SVG/D3)
+//
+// These utilities assume matplotlib-style kwargs, which is what hiveplotlib's
+// to_json() produces when the hive plot is built with the matplotlib backend
+// (hiveplotlib's default).  Other backends (bokeh, plotly, etc.) export
+// different property names (e.g. "line_width" instead of "linewidth") that
+// are not handled here.
 // ---------------------------------------------------------------------------
 
 /**

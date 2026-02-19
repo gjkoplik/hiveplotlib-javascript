@@ -12,7 +12,9 @@ then you can point a front-end team to this resource to accelerate the integrati
 
 - Renders `hiveplotlib.HivePlot` JSON exports using D3.js.
 - Supports all `hiveplotlib` visual keyword arguments: edge color/alpha/linewidth/linestyle,
-  node color/size/alpha/edgecolor, and colormaps.
+  node color/size/alpha/edgecolor, and colormaps. Kwarg conversion (alias resolution, linestyle
+  mapping, colormap mapping, scatter size conversion) is designed for hive plots exported from the
+  **matplotlib** backend, which is `hiveplotlib`'s default.
 - Accepts both file paths (loaded via `d3.json()`) and in-memory JavaScript objects.
 - Minified ESM bundle available (`hive_plots_d3_viz.min.js`).
 

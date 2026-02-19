@@ -4,9 +4,9 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-# 0.2.0 (Unreleased)
+# 0.2.0 (Released Feb 19, 2026)
 
-Formalized support for the full `hiveplotlib` visual keyword arguments, added a test suite, and modernized the project tooling.
+Formalized support for the full `hiveplotlib` visual keyword arguments, added a test suite, and modernized the project tooling. Kwarg conversion targets the **matplotlib** backend (hiveplotlib's default); exports from other backends (bokeh, plotly, etc.) use different property names that are not currently handled.
 
 ## Added
 
