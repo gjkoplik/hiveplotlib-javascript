@@ -18,20 +18,32 @@ then you can point a front-end team to this resource to accelerate the integrati
 - Accepts both file paths (loaded via `d3.json()`) and in-memory JavaScript objects.
 - Minified ESM bundle available (`hive_plots_d3_viz.min.js`).
 
-## Setup
+## Installation
+
+### npm
 
 ```bash
-npm install
+npm install @hiveplotlib/d3
 ```
 
-For testing, building, and local development details see [CONTRIBUTING.md](CONTRIBUTING.md).
+### CDN
+
+No installation needed — import directly in a browser or Jupyter notebook:
+
+```javascript
+import visualizeHivePlot from "https://cdn.jsdelivr.net/npm/@hiveplotlib/d3/hive_plots_d3_viz.min.js";
+```
+
+For local development, testing, and building see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Usage
 
-From a browser or Jupyter notebook (via CDN):
-
 ```javascript
-import visualizeHivePlot from "https://cdn.jsdelivr.net/gh/gjkoplik/hiveplotlib-javascript/hive_plots_d3_viz.min.js";
+// npm
+import visualizeHivePlot from "@hiveplotlib/d3";
+
+// CDN
+import visualizeHivePlot from "https://cdn.jsdelivr.net/npm/@hiveplotlib/d3/hive_plots_d3_viz.min.js";
 
 // from a URL (async — awaits data loading before rendering)
 await visualizeHivePlot(
