@@ -304,6 +304,10 @@ export function plotAxes(data, svg, x, y) {
    * @param {d3.scaleLinear} y d3 y axis.
    * @return {null} Nothing returned as changes will be made
    * directly to the svg input.
+   *
+   * Each <path> element receives the following data attributes:
+   *   - data-axis: the axis key name (e.g. "A")
+   *   - data-long-name: the display label (long_name field, or axis key)
    */
 
   const axisNames = Object.keys(data.axes);
@@ -322,7 +326,9 @@ export function plotAxes(data, svg, x, y) {
       .attr("stroke", "black")
       .attr("stroke-width", 1.5)
       .attr("stroke-opacity", 0.5)
-      .attr("class", "axis");
+      .attr("class", "axis")
+      .attr("data-axis", axisNames[i])
+      .attr("data-long-name", axisData.long_name || axisNames[i]);
   }
 }
 
@@ -337,6 +343,10 @@ export function plotNodes(data, svg, x, y) {
    * @param {d3.scaleLinear} y d3 y axis.
    * @return {null} Nothing returned as changes will be made
    * directly to the svg input.
+   *
+   * Each <circle> element receives the following data attributes:
+   *   - data-axis: the axis this node belongs to (e.g. "A")
+   *   - data-node-id: the unique_id of this node
    */
 
   const axisNames = Object.keys(data.axes);
@@ -396,7 +406,9 @@ export function plotNodes(data, svg, x, y) {
           ? kwargs.edgecolor[j]
           : kwargs.edgecolor;
       })
-      .attr("class", "node");
+      .attr("class", "node")
+      .attr("data-axis", axisName)
+      .attr("data-node-id", (d, j) => data.axes[axisName].nodes.unique_id[j]);
   }
 }
 
@@ -411,6 +423,13 @@ export function plotEdges(data, svg, x, y) {
    * @param {d3.scaleLinear} y d3 y axis.
    * @return {null} Nothing returned as changes will be made
    * directly to the svg input.
+   *
+   * Each <path> element receives the following data attributes:
+   *   - data-source-axis: the axis the edge originates from (e.g. "B")
+   *   - data-target-axis: the axis the edge connects to (e.g. "A")
+   *   - data-tag: the edge tag/group label (e.g. "0", "strong")
+   *   - data-edge-number: the index of this edge within its
+   *     (source-axis, target-axis, tag) group, starting from 0
    */
 
   if (!data.edges) return;
@@ -447,7 +466,11 @@ export function plotEdges(data, svg, x, y) {
             .datum(curveData)
             .attr("d", (d) => curveLine(d))
             .attr("fill", "none")
-            .attr("class", "edge");
+            .attr("class", "edge")
+            .attr("data-source-axis", fromAxes[i])
+            .attr("data-target-axis", toAxes[j])
+            .attr("data-tag", tags[k])
+            .attr("data-edge-number", curveIdx);
 
           // Color: array+cmap takes priority, then per-edge color array, then scalar
           if (colorScale && kwargs.array) {
@@ -503,6 +526,9 @@ export function plotLabels(data, svg, x, y, options = {}) {
    * vertical alignment partitioning. Default 60.
    * @return {null} Nothing returned as changes will be made
    * directly to the svg input.
+   *
+   * Each <text> element receives the following data attributes:
+   *   - data-axis: the axis key name (e.g. "A")
    */
 
   const {
@@ -561,6 +587,7 @@ export function plotLabels(data, svg, x, y, options = {}) {
       .attr("dominant-baseline", dominantBaseline)
       .attr("font-size", fontSize)
       .attr("class", "axis-label")
+      .attr("data-axis", axisNames[i])
       .text(longName);
   }
 }

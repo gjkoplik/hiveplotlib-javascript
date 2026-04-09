@@ -1,13 +1,17 @@
 {
   "name": "@hiveplotlib/d3",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "D3.js visualization for hiveplotlib JSON exports",
   "type": "module",
   "main": "hive_plots_d3_viz.js",
+  "exports": {
+    ".": "./hive_plots_d3_viz.js",
+    "./element": "./hive_plot_element.js"
+  },
   "scripts": {
     "test": "vitest run --coverage",
     "test:watch": "vitest",
-    "build": "esbuild hive_plots_d3_viz.js --bundle --minify --format=esm --external:https://cdn.jsdelivr.net/npm/d3@7/+esm --outfile=hive_plots_d3_viz.min.js",
+    "build": "esbuild hive_plots_d3_viz.js --bundle --minify --format=esm --external:https://cdn.jsdelivr.net/npm/d3@7/+esm --outfile=hive_plots_d3_viz.min.js && esbuild hive_plot_element.js --bundle --minify --format=esm --external:https://cdn.jsdelivr.net/npm/d3@7/+esm --outfile=hive_plot_element.min.js",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -52,6 +56,8 @@
   "files": [
     "hive_plots_d3_viz.js",
     "hive_plots_d3_viz.min.js",
+    "hive_plot_element.js",
+    "hive_plot_element.min.js",
     "LICENSE",
     "README.md"
   ]

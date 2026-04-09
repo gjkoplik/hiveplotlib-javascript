@@ -1628,3 +1628,160 @@ describe("backward compatibility", () => {
     }
   });
 });
+
+// ---------------------------------------------------------------------------
+// Data attribute tests
+// ---------------------------------------------------------------------------
+
+describe("data attributes", () => {
+  beforeEach(() => {
+    document.body.innerHTML = "";
+  });
+
+  describe("plotAxes data attributes", () => {
+    it("should add data-axis matching each axis key", () => {
+      const data = loadFixture("minimal_hive_plot.json");
+      const { svg, x, y } = getTestSVG();
+      plotAxes(data, svg, x, y);
+
+      const axes = document.querySelectorAll("path.axis");
+      const axisNames = Object.keys(data.axes);
+      expect(axes.length).toBe(axisNames.length);
+
+      const foundNames = [...axes].map((a) => a.getAttribute("data-axis"));
+      expect(foundNames).toEqual(axisNames);
+    });
+
+    it("should add data-long-name from long_name field", () => {
+      const data = loadFixture("minimal_hive_plot.json");
+      const { svg, x, y } = getTestSVG();
+      plotAxes(data, svg, x, y);
+
+      const axes = document.querySelectorAll("path.axis");
+      for (const axis of axes) {
+        const name = axis.getAttribute("data-axis");
+        expect(axis.getAttribute("data-long-name")).toBe(
+          data.axes[name].long_name,
+        );
+      }
+    });
+
+    it("should fall back to axis key when long_name is missing", () => {
+      const data = loadFixture("minimal_hive_plot.json");
+      delete data.axes.A.long_name;
+      const { svg, x, y } = getTestSVG();
+      plotAxes(data, svg, x, y);
+
+      const axisA = document.querySelector('path.axis[data-axis="A"]');
+      expect(axisA.getAttribute("data-long-name")).toBe("A");
+    });
+  });
+
+  describe("plotNodes data attributes", () => {
+    it("should add data-axis matching the axis each node belongs to", () => {
+      const data = loadFixture("minimal_hive_plot.json");
+      const { svg, x, y } = getTestSVG();
+      plotNodes(data, svg, x, y);
+
+      for (const axisName of Object.keys(data.axes)) {
+        const nodesOnAxis = document.querySelectorAll(
+          `circle.node[data-axis="${axisName}"]`,
+        );
+        expect(nodesOnAxis.length).toBe(
+          data.axes[axisName].nodes.unique_id.length,
+        );
+      }
+    });
+
+    it("should add data-node-id matching unique_id values", () => {
+      const data = loadFixture("minimal_hive_plot.json");
+      const { svg, x, y } = getTestSVG();
+      plotNodes(data, svg, x, y);
+
+      for (const axisName of Object.keys(data.axes)) {
+        const nodesOnAxis = document.querySelectorAll(
+          `circle.node[data-axis="${axisName}"]`,
+        );
+        const expectedIds = data.axes[axisName].nodes.unique_id;
+        const foundIds = [...nodesOnAxis].map((n) =>
+          Number(n.getAttribute("data-node-id")),
+        );
+        expect(foundIds).toEqual(expectedIds);
+      }
+    });
+  });
+
+  describe("plotEdges data attributes", () => {
+    it("should add data-source-axis, data-target-axis, and data-tag", () => {
+      const data = loadFixture("minimal_hive_plot.json");
+      const { svg, x, y } = getTestSVG();
+      plotEdges(data, svg, x, y);
+
+      const edges = document.querySelectorAll("path.edge");
+      for (const edge of edges) {
+        expect(edge.getAttribute("data-source-axis")).toBeTruthy();
+        expect(edge.getAttribute("data-target-axis")).toBeTruthy();
+        expect(edge.getAttribute("data-tag")).toBeTruthy();
+      }
+    });
+
+    it("should add data-edge-number as sequential integers per group", () => {
+      const data = loadFixture("minimal_hive_plot.json");
+      const { svg, x, y } = getTestSVG();
+      plotEdges(data, svg, x, y);
+
+      // Check that edges within a specific group have sequential indices
+      for (const from in data.edges) {
+        for (const to in data.edges[from]) {
+          for (const tag in data.edges[from][to]) {
+            const groupEdges = document.querySelectorAll(
+              `path.edge[data-source-axis="${from}"][data-target-axis="${to}"][data-tag="${tag}"]`,
+            );
+            const numCurves = data.edges[from][to][tag].curves.length;
+            expect(groupEdges.length).toBe(numCurves);
+
+            const indices = [...groupEdges].map((e) =>
+              Number(e.getAttribute("data-edge-number")),
+            );
+            const expected = Array.from({ length: numCurves }, (_, i) => i);
+            expect(indices).toEqual(expected);
+          }
+        }
+      }
+    });
+
+    it("should match edge counts per source-target-tag to fixture data", () => {
+      const data = loadFixture("multi_tag_hive_plot.json");
+      const { svg, x, y } = getTestSVG();
+      plotEdges(data, svg, x, y);
+
+      for (const from in data.edges) {
+        for (const to in data.edges[from]) {
+          for (const tag in data.edges[from][to]) {
+            const info = data.edges[from][to][tag];
+            if (!info.ids || info.ids.length === 0) continue;
+            const groupEdges = document.querySelectorAll(
+              `path.edge[data-source-axis="${from}"][data-target-axis="${to}"][data-tag="${tag}"]`,
+            );
+            expect(groupEdges.length).toBe(info.curves.length);
+          }
+        }
+      }
+    });
+  });
+
+  describe("plotLabels data attributes", () => {
+    it("should add data-axis matching each axis key", () => {
+      const data = loadFixture("minimal_hive_plot.json");
+      const { svg, x, y } = getTestSVG();
+      plotLabels(data, svg, x, y);
+
+      const labels = document.querySelectorAll("text.axis-label");
+      const axisNames = Object.keys(data.axes);
+      expect(labels.length).toBe(axisNames.length);
+
+      const foundNames = [...labels].map((l) => l.getAttribute("data-axis"));
+      expect(foundNames).toEqual(axisNames);
+    });
+  });
+});
