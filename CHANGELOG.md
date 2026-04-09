@@ -4,6 +4,32 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+# 0.3.0 (Released April 9, 2026)
+
+Added a `<hive-plot>` Web Component for framework-agnostic usage and semantic data attributes on all SVG elements for
+CSS-based styling.
+
+## Added
+
+- `<hive-plot>` Web Component (`hive_plot_element.js`) — renders hive plots from a `src` URL or
+  in-memory `.data` property. Works in React, Vue, Svelte, plain HTML, or any framework. No Shadow
+  DOM, so external CSS can target SVG elements directly.
+- Semantic `data-*` attributes on all rendered SVG elements:
+  - `.axis` (path): `data-axis`, `data-long-name`.
+  - `.node` (circle): `data-axis`, `data-node-id`.
+  - `.edge` (path): `data-source-axis`, `data-target-axis`, `data-tag`, `data-edge-number`.
+  - `.axis-label` (text): `data-axis`.
+- CSS override support: JSON kwargs are applied as SVG presentational attributes, which CSS rules
+  naturally override without `!important`.
+- `hive-plot-rendered` and `hive-plot-error` custom events on the web component.
+- Pending render queue: rapid attribute/data changes are coalesced so the final state is always
+  rendered.
+- Package `exports` map: `@hiveplotlib/d3` (D3 API) and `@hiveplotlib/d3/element` (web component).
+
+## Tooling Changes
+
+- Switched to Renovate (`./renovate.json`) instead of Dependabot for dependency updates.
+
 # 0.2.0 (Released Feb 19, 2026)
 
 Formalized support for the full `hiveplotlib` visual keyword arguments, added a test suite, and modernized the project tooling. Kwarg conversion targets the **matplotlib** backend (hiveplotlib's default); exports from other backends (bokeh, plotly, etc.) use different property names that are not currently handled.

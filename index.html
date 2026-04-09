@@ -21,7 +21,54 @@
     </style>
   </head>
   <body>
-    <h1>hiveplotlib D3 visualization</h1>
+    <h1>&lt;hive-plot&gt; Web Component</h1>
+
+    <div class="plot-section">
+      <h2>Web Component: minimal_hive_plot.json</h2>
+      <p>
+        Rendered via <code>&lt;hive-plot&gt;</code> with CSS overrides: axis A
+        nodes in red, tag "0" edges in steelblue with thicker stroke. Hovering
+        over any node enlarges it and turns it orange. Hovering over any edge
+        thickens it.
+      </p>
+      <style>
+        #web-component-demo .node[data-axis="A"] {
+          fill: red;
+        }
+        #web-component-demo .edge[data-tag="0"] {
+          stroke: steelblue;
+          stroke-width: 3;
+        }
+
+        #web-component-demo .node:hover {
+          fill: orange;
+          r: 5;
+        }
+        #web-component-demo .edge:hover {
+          stroke-width: 5;
+        }
+      </style>
+      <div id="web-component-demo">
+        <hive-plot
+          src="tests/fixtures/minimal_hive_plot.json"
+          show-labels="true"
+        ></hive-plot>
+      </div>
+    </div>
+
+    <div class="plot-section">
+      <h2>Web Component: no labels</h2>
+      <p>Same data, labels suppressed via attribute.</p>
+      <hive-plot
+        src="tests/fixtures/minimal_hive_plot.json"
+        show-labels="false"
+      ></hive-plot>
+    </div>
+
+    <script type="module" src="./hive_plot_element.js"></script>
+
+    <hr />
+    <h1>Direct D3 API</h1>
 
     <div class="plot-section">
       <h2>example_hive_plot.json</h2>
