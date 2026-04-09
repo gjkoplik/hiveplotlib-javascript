@@ -133,6 +133,6 @@ URL as external so the minified bundle also preserves this import.
 
 ## CI
 
-GitHub Actions runs on push/PR to `main` across Node 18, 20, and 22. The CI job runs
+GitHub Actions runs on push/PR to `main` across Node 20, 22, and 24. The CI job runs
 linting, format checking, tests (with coverage), `npm audit`, and the production build.
 Dependabot is configured to open weekly PRs for npm and GitHub Actions dependency updates.
