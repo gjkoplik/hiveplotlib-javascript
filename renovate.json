@@ -1,0 +1,37 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", ":enableVulnerabilityAlerts"],
+  "schedule": ["before 9am on Monday"],
+  "timezone": "UTC",
+  "automerge": false,
+  "packageRules": [
+    {
+      "description": "Auto-merge patch+minor devDependency updates",
+      "matchUpdateTypes": ["patch", "minor"],
+      "matchDepTypes": ["devDependencies"],
+      "automerge": true,
+      "automergeType": "pr"
+    },
+    {
+      "description": "Group vitest packages",
+      "matchPackageNames": ["vitest", "@vitest/coverage-v8"],
+      "groupName": "vitest"
+    },
+    {
+      "description": "Group ESLint packages",
+      "matchPackageNames": ["eslint", "@eslint/js"],
+      "groupName": "eslint"
+    },
+    {
+      "description": "Group linting/formatting tools",
+      "matchPackageNames": ["prettier", "lint-staged", "husky"],
+      "groupName": "code-quality"
+    },
+    {
+      "description": "Major version bumps — separate PRs, no auto-merge",
+      "matchUpdateTypes": ["major"],
+      "automerge": false,
+      "groupName": null
+    }
+  ]
+}
