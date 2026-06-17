@@ -1,6 +1,6 @@
 # hiveplotlib-javascript
 
-JavaScript visualization for JSON outputs from [Hiveplotlib](https://gitlab.com/geomdata/hiveplotlib).
+JavaScript visualization for JSON outputs from [Hiveplotlib](https://gitlab.com/hiveplotlib/hiveplotlib).
 
 ## Goal of This Repository
 

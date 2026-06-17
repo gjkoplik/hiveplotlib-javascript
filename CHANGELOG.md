@@ -102,4 +102,4 @@ Revising maintained support to work with the new, higher-level `hiveplotlib` API
 
 # Added
 
-- First pass at JavaScript (D3) code to work off of [Hiveplotlib](https://gitlab.com/geomdata/hiveplotlib) JSON outputs.
+- First pass at JavaScript (D3) code to work off of [Hiveplotlib](https://gitlab.com/hiveplotlib/hiveplotlib) JSON outputs.
