@@ -4,6 +4,11 @@
   "schedule": ["before 9am on Monday"],
   "timezone": "UTC",
   "automerge": false,
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 9am on Monday"],
+    "automerge": true
+  },
   "packageRules": [
     {
       "description": "Auto-merge patch+minor devDependency updates",
