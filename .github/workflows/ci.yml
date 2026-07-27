@@ -8,7 +8,9 @@ on:
   release:
     types: [published]
   schedule:
-    - cron: "0 9 * * 1"
+    # Late Monday UTC, after Renovate's all-Monday window has had time to open
+    # and auto-merge the weekly lock file maintenance PR.
+    - cron: "0 22 * * 1"
 
 jobs:
   test:

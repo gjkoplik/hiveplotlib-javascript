@@ -1,12 +1,13 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended", ":enableVulnerabilityAlerts"],
-  "schedule": ["before 9am on Monday"],
+  "schedule": ["* * * * 1"],
   "timezone": "UTC",
   "automerge": false,
   "lockFileMaintenance": {
+    "description": "Refresh the lockfile weekly so transitive advisories do not accumulate between direct-dependency bumps",
     "enabled": true,
-    "schedule": ["before 9am on Monday"],
+    "schedule": ["* * * * 1"],
     "automerge": true
   },
   "packageRules": [
