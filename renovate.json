@@ -4,6 +4,7 @@
   "schedule": ["* * * * 1"],
   "timezone": "UTC",
   "automerge": false,
+  "minimumReleaseAge": "3 days",
   "lockFileMaintenance": {
     "description": "Refresh the lockfile weekly so transitive advisories do not accumulate between direct-dependency bumps",
     "enabled": true,
